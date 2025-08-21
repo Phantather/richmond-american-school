@@ -32,12 +32,12 @@ export const SiteHeader: FC<SiteHeaderProps> = () => {
             <div className="flex items-center gap-[30px]">
               <SiteLink
                 path={RoutesUrls.specialOffer}
-                className="text-[14px] font-normal"
+                className="text-[14px] font-medium text-white"
                 title={t('routes.home')}
               />
               <SiteLink
                 path={RoutesUrls.about}
-                className="text-[14px] font-normal"
+                className="text-[14px] font-medium text-white"
                 title={t('routes.about')}
               />
             </div>

@@ -5,7 +5,7 @@ export default {
     borderOpacity: '1',
     extend: {
       colors: {
-        primary: '#202f5b',
+        primary: '#0000ff',
         secondary: '#0b00ea',
         black: '#000',
         gray: '#bec3cf',
@@ -15,7 +15,7 @@ export default {
         green: '#8fbb33',
         orange: '#ff7800',
         yellow: '#ffd60a',
-        red: '#ff4d4f',
+        red: '#ff0000',
         bg: '#f1f4f9',
         content: '#fff',
         stroke: '#8b8b8b',
