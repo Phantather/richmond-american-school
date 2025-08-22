@@ -34,8 +34,6 @@ export const News = () => {
     fetchData();
   }, []);
 
-  const newsShortList = news?.data?.filter((_, index) => index < 3);
-
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -44,8 +42,8 @@ export const News = () => {
     if (news) {
       return (
         <>
-          <NewsCards newsList={newsShortList || []} />
-          <div className="col-span-12 flex justify-center mt-4">
+          <NewsCards newsList={news?.data || []} />
+          <div className="col-span-12 md:col-span-8 sm:col-span-4 flex justify-center mt-4">
             {news?.totalPages > 12 && (
               <Pagination
                 current={currentPage}
@@ -63,27 +61,25 @@ export const News = () => {
   };
 
   return (
-    <div className="w-full p-[100px_0] bg-white">
-      <div className="max-w-[1024px] px-5 w-full mx-auto grid grid-cols-12 sm:grid-cols-8 xs:grid-cols-4">
-        <h2 className="col-span-12 sm:col-span-8 xs:col-span-4  text-center text-[48px] mb-[60px] font-semibold">
-          Новости
-        </h2>
-        {isLoading ? (
-          <div className="col-span-12 sm:col-span-8 xs:col-span-4 flex justify-center items-center">
-            <Spin size="large"></Spin>
-          </div>
-        ) : (
-          <> {newsCardsView()}</>
-        )}
-
-        <div className="col-span-12 flex justify-center mt-[55px]">
-          <button
-            onClick={() => navigate(RoutesUrls.news)}
-            className="bg-primary text-white !rounded-0 border-none p-[15px_25px] cursor-pointer"
-          >
-            Больше новостей
-          </button>
+    <div className="grid grid-cols-12 md:grid-cols-8 sm:grid-cols-4 p-[100px_0]">
+      <h2 className="col-span-12 md:col-span-8 sm:col-span-4 text-center text-[48px] mb-[30px] font-semibold">
+        Новости
+      </h2>
+      {isLoading ? (
+        <div className="col-span-12 md:col-span-8 sm:col-span-4 flex justify-center items-center">
+          <Spin size="large"></Spin>
         </div>
+      ) : (
+        <> {newsCardsView()}</>
+      )}
+
+      <div className="col-span-12 md:col-span-8 sm:col-span-4  flex justify-center mt-[55px]">
+        <button
+          onClick={() => navigate(RoutesUrls.news)}
+          className="bg-primary text-white !rounded-0 border-none p-[15px_25px] cursor-pointer"
+        >
+          Больше новостей
+        </button>
       </div>
     </div>
   );

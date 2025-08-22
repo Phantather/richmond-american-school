@@ -1,21 +1,14 @@
-import { HomeHero } from '~pages/shared/home/ui/HomeHero';
-
 import { SeoHelmet } from '~shared/lib/seo';
-import { Models } from '~widgets/shared/models';
 import { News } from '~widgets/shared/news';
 
-interface IHomePage {}
-
-export function HomePage({}: IHomePage) {
+export function HomePage() {
   return (
     <>
       <SeoHelmet
-        title={'Hyundai' || ''}
-        descriptionKey="Официальный дилер Hyundai. Новые автомобили, спецпредложения, сервис и тест-драйвы. Выгодные условия покупки."
+        title={'Richmond american school' || ''}
+        descriptionKey="Richmond american school"
       />
-      <div className="place-items-center lg:max-h-[100vh] min-h-[calc(100vh-228px)]">
-        <HomeHero />
-        <Models />
+      <div className="max-w-[1536px] w-full lg:max-h-[100vh] min-h-[calc(100vh-228px)] mx-auto px-5">
         <News />
       </div>
     </>
