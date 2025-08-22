@@ -14,7 +14,7 @@ export const NewsCards: FC<NewsCardsProps> = ({ newsList }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="col-span-12 md:col-span-8 sm:col-span-4  grid grid-cols-12 md:grid-cols-8 sm:grid-cols-4 gap-[46px]">
+    <div className="col-span-12 md:col-span-8 sm:col-span-4  grid grid-cols-12 md:grid-cols-8 sm:grid-cols-4 gap-5">
       {newsList.map((newsItem, idx) => (
         <div
           onClick={() => navigate(`${RoutesUrls?.news}/${newsItem?.id}`)}
@@ -27,13 +27,13 @@ export const NewsCards: FC<NewsCardsProps> = ({ newsList }) => {
               alt="car"
               width="300"
               height="205"
-              className="md:w-full md:h-[400px] sm:h-[305px] object-cover"
+              className="md:w-full md:h-[400px] sm:h-[305px] object-cover rounded"
             />
           )}
 
           <div className="flex flex-col gap-5">
-            <h2 className="font-medium text-[16px]">{newsItem?.title}</h2>
-            <p className="text-[12px] text-[#858585]">
+            <h2 className="font-bold text-[28px] text-black">{newsItem?.title}</h2>
+            <p className="text-[18px] text-[#858585]">
               {dayjs(newsItem?.date).locale('ru').format('D MMMM, YYYY')}
             </p>
           </div>

@@ -25,7 +25,7 @@ export const SetRegistrationView: React.FC<SetRegistrationViewProps> = () => {
 
   return (
     <Select
-      className="h-[34px]"
+      className="h-[34px] !border-none"
       value={lang}
       onChange={handleLocaleChange}
       options={langList}

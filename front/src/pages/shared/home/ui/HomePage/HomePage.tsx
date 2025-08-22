@@ -1,5 +1,6 @@
 import { SeoHelmet } from '~shared/lib/seo';
 import { News } from '~widgets/shared/news';
+import { Banner } from '~widgets/shared/banner';
 
 export function HomePage() {
   return (
@@ -9,6 +10,7 @@ export function HomePage() {
         descriptionKey="Richmond american school"
       />
       <div className="max-w-[1536px] w-full lg:max-h-[100vh] min-h-[calc(100vh-228px)] mx-auto px-5">
+        {/*<Banner />*/}
         <News />
       </div>
     </>
