@@ -32,12 +32,12 @@ export const SiteHeader: FC<SiteHeaderProps> = () => {
             <div className="flex items-center gap-[30px]">
               <SiteLink
                 path={RoutesUrls.specialOffer}
-                className="text-[14px] font-medium text-white"
+                className="text-[16px] font-medium text-white"
                 title={t('routes.home')}
               />
               <SiteLink
                 path={RoutesUrls.about}
-                className="text-[14px] font-medium text-white"
+                className="text-[16px] font-medium text-white"
                 title={t('routes.about')}
               />
             </div>
@@ -50,25 +50,41 @@ export const SiteHeader: FC<SiteHeaderProps> = () => {
 
   const mobileHeader = () => {
     return (
-      <div className="fixed top-0 w-full bg-white z-10">
+      <div className="fixed top-0 w-full bg-primary z-20">
         <Header className="mx-auto">
           <div className="relative flex justify-between w-full items-center">
             <SiteLogo />
-            <div
-              onClick={() => setBurgerMenuVisible((prev) => !prev)}
-              className={`burger-icon ${burgerMenuVisible ? 'open' : ''}`}
-            >
-              <div className="line1"></div>
-              <div className="line2"></div>
-              <div className="line3"></div>
+            <div className="flex items-center gap-5">
+              <SetRegistrationView />
+              <div
+                onClick={() => setBurgerMenuVisible((prev) => !prev)}
+                className={`burger-icon ${burgerMenuVisible ? 'open' : ''}`}
+              >
+                <div className="line1"></div>
+                <div className="line2"></div>
+                <div className="line3"></div>
+              </div>
             </div>
           </div>
           <div
-            className={`fixed top-[70px] right-0 w-1/2 sm:w-full bg-[#fff] h-[100vh] shadow-md p-5 z-10 transition-transform duration-300 ${
+            className={`fixed top-[70px] right-0 w-1/2 bg-primary h-[100vh] border border-solid border-white border-r-transparent border-t-transparent shadow-md p-5 z-10 transition-transform duration-300 ${
               burgerMenuVisible ? 'translate-x-0' : 'translate-x-[100%]'
             }`}
           >
-            <div className="grid"></div>
+            <div className="grid">
+              <div className="flex flex-col items-center gap-[30px]">
+                <SiteLink
+                  path={RoutesUrls.specialOffer}
+                  className="text-[16px] font-medium text-white"
+                  title={t('routes.home')}
+                />
+                <SiteLink
+                  path={RoutesUrls.about}
+                  className="text-[16px] font-medium text-white"
+                  title={t('routes.about')}
+                />
+              </div>
+            </div>
           </div>
         </Header>
       </div>
