@@ -31,6 +31,7 @@ export const ModalHeaderContact = () => {
             href="https://wa.me/996775530003"
             className="w-full bg-primary p-[10px_25px] text-white hover:text-white cursor-pointer border-none flex justify-center items-center gap-[7px]"
             target="_blank"
+            rel="noreferrer"
           >
             <WhatsAppIcon /> Написать в WhatsApp
           </a>

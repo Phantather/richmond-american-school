@@ -17,7 +17,9 @@
 // }
 
 export interface ApiNewsContent {
-  description: string;
+  description_ru: string;
+  description_ky: string;
+  description_en: string;
   images: any[];
 }
 
@@ -33,7 +35,9 @@ export interface ApiNews {
 
 export interface ApiNewsRequest {
   id_type?: number;
-  title: string;
+  title_ru: string;
+  title_ky: string;
+  title_en: string;
   contents: ApiNewsContent[];
   main_images: any[];
   main_image_to_delete?: any; // Изменим тип на number[]

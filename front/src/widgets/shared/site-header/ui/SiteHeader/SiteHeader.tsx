@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom';
 
 import { Menu, MenuProps } from 'antd';
 
-import { CarsData } from '~widgets/shared/cars';
 import { RoutesUrls } from '~shared/lib/router';
 import { DropDownIcon, Header, SiteLink, SiteLogo, useWindowInnerWidth } from '~shared/ui';
 import { ModalHeaderContact } from '~shared/ui/data-display/ModalHeaderContact';

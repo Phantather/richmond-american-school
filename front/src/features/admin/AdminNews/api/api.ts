@@ -9,9 +9,10 @@ export const updateNews = async (id: number, data: ApiNewsRequest) => {
   const token = Cookies.get(`${import.meta.env.VITE_TOKEN_NAME}`);
   const formData = new FormData();
 
-  formData.append('title', data.title);
+  formData.append('title_ru', data.title_ru);
+  formData.append('title_ky', data.title_ky);
+  formData.append('title_en', data.title_en);
   formData.append('date', data.date);
-  formData.append('is_special_offer', String(data.is_special_offer));
 
   if (data.main_image_to_delete?.length > 0) {
     formData.append('main_image_to_delete', JSON.stringify(data.main_image_to_delete));
@@ -69,8 +70,15 @@ export const updateNews = async (id: number, data: ApiNewsRequest) => {
 };
 
 export const deleteNews = async (id: number) => {
+  const token = Cookies.get(`${import.meta.env.VITE_TOKEN_NAME}`);
+
   try {
-    return await api.delete<unknown, ApiResponseData<ApiNewsData>>(routes.deleteNews(id));
+    return await api.delete<unknown, ApiResponseData<ApiNewsData>>(routes.deleteNews(id), {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
   } catch (error) {
     return error;
   }
@@ -81,13 +89,16 @@ export const createNews = async (data: ApiNewsRequest) => {
   const formData = new FormData();
 
   formData.append('id_type', String(data.id_type));
-  formData.append('title', data.title);
+  formData.append('title_ru', data.title_ru || '');
+  formData.append('title_ky', data.title_ky || '');
+  formData.append('title_en', data.title_en || '');
   formData.append('date', data.date);
-  formData.append('is_special_offer', String(data.is_special_offer));
 
   // Добавляем описания и их изображения
   data.contents.forEach((content, index) => {
-    formData.append(`contents[${index}][description]`, content.description);
+    formData.append(`contents[${index}][description_ru]`, content.description_ru || '');
+    formData.append(`contents[${index}][description_ky]`, content.description_ky || '');
+    formData.append(`contents[${index}][description_en]`, content.description_en || '');
 
     content.images.forEach((file, fileIndex) => {
       formData.append(`images_${index}`, file);
@@ -100,16 +111,12 @@ export const createNews = async (data: ApiNewsRequest) => {
   });
 
   try {
-    return await api.post<unknown, ApiResponseData<ApiNewsData>>(
-      routes.createNewNews(), // Новый endpoint
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${token}`,
-        },
-      }
-    );
+    return await api.post<unknown, ApiResponseData<ApiNewsData>>(routes.createNews(), formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
   } catch (error) {
     return error;
   }

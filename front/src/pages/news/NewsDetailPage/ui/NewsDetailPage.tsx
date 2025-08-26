@@ -12,9 +12,11 @@ export function NewsDetailPage() {
     <>
       <SeoHelmet
         title="Новость"
-        descriptionKey="Детальная страница новостей Hyundai: актуальные события, новинки, акции и пресс-релизы. Узнайте больше о последних изменениях и обновлениях бренда."
+        descriptionKey="Детальная страница новостей RICHMOND AMERICAN SCHOOL"
       />
-      <NewsDetailData />
+      <div className="max-w-[1536px] mx-auto w-full py-5">
+        <NewsDetailData />
+      </div>
     </>
   );
 }

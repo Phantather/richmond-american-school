@@ -6,26 +6,20 @@ import { useLayoutEffect, useState } from 'react';
 
 import { RoutesUrls } from '~shared/lib/router';
 import { NewsDetail, useNewsDetail, useResetNewsDetail, useSetNewsDetail } from '~entities/news';
-import {
-  useNewsSimilar,
-  useResetNewsSimilar,
-  useSetNewsSimilar,
-} from '~entities/news/news-similar';
-import { NewsCards } from '~entities/shared/news';
+
+import { i18n } from '~shared/lib/i18n';
 
 export const NewsDetailData = () => {
   const { id } = useParams<{ id?: any }>();
-
-  const [isLoading, setIsLoading] = useState(false);
+  const locale = i18n.language;
 
   const newsDetail = useNewsDetail();
-  const newsSimilar = useNewsSimilar();
 
   const setNewsDetail = useSetNewsDetail();
-  const setNewsSimilar = useSetNewsSimilar();
 
   const resetNewsDetail = useResetNewsDetail();
-  const resetNewsSimilar = useResetNewsSimilar();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   useLayoutEffect(() => {
     const fetchData = async () => {
@@ -45,45 +39,44 @@ export const NewsDetailData = () => {
     fetchData();
   }, [id, setNewsDetail]);
 
-  useLayoutEffect(() => {
-    const fetchSimilarNews = async () => {
-      if (newsDetail) {
-        try {
-          setIsLoading(true);
+  const getLocalizedContent = (
+    content: { [key: string]: string | null } | undefined,
+    maxLength?: number
+  ): string => {
+    if (!content) {
+      return '';
+    }
 
-          resetNewsSimilar();
+    const text = content[locale] || '';
 
-          await setNewsSimilar({ title: newsDetail.title, id: newsDetail.id });
-          setIsLoading(false);
-        } catch (error) {
-          console.error('Error fetching similar news:', error);
-          setIsLoading(false);
-        }
-      }
-    };
+    if (maxLength && text.length > maxLength) {
+      return text.slice(0, maxLength) + '...';
+    }
 
-    fetchSimilarNews();
-  }, [newsDetail, setNewsSimilar]);
+    return text;
+  };
 
   const breadcrumbItems = [
     {
       title: (
-        <NavLink to={RoutesUrls.root} className="text-black cursor-pointer text-[14px]">
+        <NavLink to={RoutesUrls.root} className="cursor-pointer text-[14px]">
           Главная
         </NavLink>
       ),
     },
     {
       title: (
-        <NavLink to={RoutesUrls.news} className="text-black cursor-pointer text-[14px]">
+        <NavLink to={RoutesUrls.news} className="cursor-pointer text-[14px]">
           Новости
         </NavLink>
       ),
     },
     {
-      title: <div className="text-black text-[14px]">{newsDetail?.title}</div>,
+      title: <div className="text-[14px]">{getLocalizedContent(newsDetail?.title)}</div>,
     },
   ];
+
+  console.log(newsDetail);
 
   const newsDetailView = () => {
     if (newsDetail) {
@@ -93,27 +86,8 @@ export const NewsDetailData = () => {
     return null;
   };
 
-  const newsSimilarView = () => {
-    if (newsSimilar) {
-      const filteredNews = newsSimilar.filter((news) => news.id !== newsDetail?.id);
-
-      return (
-        <>
-          {filteredNews?.length > 0 && (
-            <div className="mt-[100px] col-span-12 sm:col-span-8 xs:col-span-4">
-              <h2 className="text-[36px] mb-[40px]">Похожие статьи</h2>
-              <NewsCards newsList={filteredNews || []} />
-            </div>
-          )}
-        </>
-      );
-    }
-
-    return null;
-  };
-
   return (
-    <div className="grid grid-cols-12 sm:grid-cols-8 xs:grid-cols-4 p-[40px_20px_100px] max-w-[1024px] mx-auto w-full">
+    <div className="grid grid-cols-12 sm:grid-cols-8 xs:grid-cols-4">
       <Breadcrumb
         separator="/"
         items={breadcrumbItems}
@@ -126,7 +100,7 @@ export const NewsDetailData = () => {
       ) : (
         <>
           {newsDetailView()}
-          {newsSimilarView()}
+          {/*{newsSimilarView()}*/}
         </>
       )}
     </div>

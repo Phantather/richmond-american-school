@@ -44,7 +44,7 @@ export const AdminCarsFileInfoTable: FC<AdminCarsFileInfoTableProps> = ({
       width: 200,
       render: (_row, value) => (
         <>
-          <a href={value?.file_name} target="_blank">
+          <a href={value?.file_name} target="_blank" rel="noreferrer">
             <FileIcon />
           </a>
         </>

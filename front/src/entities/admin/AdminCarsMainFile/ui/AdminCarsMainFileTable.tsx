@@ -89,7 +89,12 @@ export const AdminCarsMainFileTable: FC<AdminCarsMainFileTableProps> = ({
       width: 200,
       render: (_row, value) => (
         <div className="flex gap-2 items-center">
-          <a href={value?.file_name} target="_blank" className="flex items-center gap-2">
+          <a
+            href={value?.file_name}
+            target="_blank"
+            className="flex items-center gap-2"
+            rel="noreferrer"
+          >
             <FileIcon />
             {value?.id_guide === 1 ? 'Руководство' : 'Брошюра'}
           </a>

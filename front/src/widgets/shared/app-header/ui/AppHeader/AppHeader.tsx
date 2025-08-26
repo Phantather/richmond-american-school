@@ -6,6 +6,7 @@ import { useCollapsed, useSetCollapsed } from '~features/shared/collapse';
 import { useTranslation } from '~shared/lib/i18n';
 import { RoutesUrls } from '~shared/lib/router';
 import { Header, Logo, MenuIcon, useWindowInnerWidth } from '~shared/ui';
+import { SetRegistrationView } from '~features/shared/locale';
 
 export interface AppHeaderProps extends Partial<ComponentWithChild> {}
 
@@ -48,12 +49,14 @@ export const AppHeader: FC<AppHeaderProps> = () => {
             {/*<Logo collased={false} />*/}
             <TitleHead />
           </div>
-
           <div onClick={handleCollapse} className="cursor-pointer flex items-center">
             <MenuIcon />
           </div>
         </div>
       )}
+      <div className="fixed top-5 right-5">
+        <SetRegistrationView />
+      </div>
     </Header>
   );
 };

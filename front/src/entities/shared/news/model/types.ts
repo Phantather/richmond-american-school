@@ -6,11 +6,21 @@ export interface INewsImage {
 export interface NewsItem {
   active: boolean;
   date: string;
-  description: string | null;
+  description: {
+    ru: string | null;
+    ky: string | null;
+    en: string | null;
+    [key: string]: string | null; // Add index signature
+  };
   id: number;
   id_type: number;
   image_name: string;
-  title: string;
+  title: {
+    ru: string | null;
+    ky: string | null;
+    en: string | null;
+    [key: string]: string | null; // Add index signature
+  };
   type_name: string;
   updated_at: string;
 }

@@ -35,6 +35,8 @@ export const AdminNewsData = () => {
     setCurrentPage(page);
   };
 
+  console.log(news);
+
   const newsTableView = () => {
     if (news) {
       return (

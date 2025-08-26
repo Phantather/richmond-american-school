@@ -1,9 +1,9 @@
 import { FC, useCallback, useEffect, useState } from 'react';
-import { Button, Checkbox, Form, Image, Input, List, Modal, Upload } from 'antd';
+import { Button, Checkbox, Form, Image, Input, List, Modal, Segmented, Upload } from 'antd';
 import ReactQuill from 'react-quill';
 
 import { ApiNewsRequest, createNews, updateNews } from '~features/admin/AdminNews';
-import { DatePicker, UploadIcon, useNotification } from '~shared/ui';
+import { DatePicker, Loader, UploadIcon, useNotification } from '~shared/ui';
 import { dayjs } from '~shared/lib/time/dayjs';
 import 'react-quill/dist/quill.snow.css';
 import { useNewsDetail, useSetNewsDetail } from '~entities/news';
@@ -29,7 +29,11 @@ Quill.register(SizeAttributor, true);
 
 interface Description {
   id: number;
-  value: string;
+  values: {
+    ru: string;
+    ky: string;
+    en: string;
+  };
   fileList: {
     uid: number;
     name: string;
@@ -79,57 +83,86 @@ export const AdminNewsSave: FC<AdminNewsSaveProps> = ({
   const notification = useNotification();
   const [fileList, setFileList] = useState<any>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [descriptions, setDescriptions] = useState([{ id: 1, value: '', fileList: [] }]);
+  const [descriptions, setDescriptions] = useState([
+    {
+      id: 1,
+      values: { ru: '', ky: '', en: '' },
+      fileList: [],
+    },
+  ]);
+
   const [contentsToDelete, setContentsToDelete] = useState<number[]>([]);
   const [mainImagesToDelete, setMainImagesToDelete] = useState<number[]>([]);
   const [imagesToDelete, setImagesToDelete] = useState<number[]>([]);
+  const [selectedLanguage, setSelectedLanguage] = useState('ru');
+  const [isLoadingData, setIsLoadingData] = useState(false);
 
   const newDetail = useNewsDetail();
   const setNewsDetail = useSetNewsDetail();
 
   useEffect(() => {
     if (type === 'edit' && modal && newsItem) {
+      setIsLoadingData(true);
       setNewsDetail({ id: newsItem?.id });
     }
   }, [type, modal, newsItem, setNewsDetail]);
 
   useEffect(() => {
-    if (newDetail && type === 'edit') {
+    if (newDetail && type === 'edit' && modal) {
+      setIsLoadingData(false);
+
+      // ВЕСЬ КОД ОБРАБОТКИ ДАННЫХ ПЕРЕНЕСИТЕ СЮДА:
+      // Безопасное получение значений заголовка
+      const titleValues = {
+        ru: newDetail.title?.ru || '',
+        ky: newDetail.title?.ky || '',
+        en: newDetail.title?.en || '',
+      };
+
       form.setFieldsValue({
-        title: newDetail.title,
+        title_ru: titleValues.ru,
+        title_ky: titleValues.ky,
+        title_en: titleValues.en,
         date: dayjs(newDetail.date),
-        is_special_offer: newDetail.is_special_offer,
       });
 
-      const mainFileList = newDetail.main_images?.map((image) => ({
-        uid: image.id,
-        name: `main_${image.id}`,
-        url: image.url,
-        status: 'done',
-      }));
+      const mainFileList =
+        newDetail.main_images?.map((image: any) => ({
+          uid: image.id,
+          name: `main_${image.id}`,
+          url: image.url,
+          status: 'done',
+        })) || [];
 
-      setFileList(mainFileList || []);
+      setFileList(mainFileList);
 
+      // Безопасная обработка контента
       if (newDetail.content?.length > 0) {
-        const contentDescriptions = newDetail.content.map((content, index) => ({
+        const contentDescriptions = newDetail.content.map((content: any, index: number) => ({
           id: content.id || index + 1,
-          value: content.description || '',
-          fileList: content.images.map((img) => ({
-            uid: img.id,
-            name: img.name,
-            url: img.url,
-            status: 'done',
-          })),
+          values: {
+            ru: content.description_ru || '',
+            ky: content.description_ky || '',
+            en: content.description_en || '',
+          },
+          fileList:
+            content.images?.map((img: any) => ({
+              uid: img.id,
+              name: img.name || `image_${img.id}`,
+              url: img.url,
+              status: 'done',
+            })) || [],
         }));
 
         setDescriptions(contentDescriptions as any);
       } else {
-        setDescriptions([{ id: 1, value: '', fileList: [] }]);
+        setDescriptions([{ id: 1, values: { ru: '', ky: '', en: '' }, fileList: [] }]);
       }
-    } else if (type === 'add') {
+    } else if (type === 'add' && modal) {
       form.resetFields();
       setFileList([]);
-      setDescriptions([{ id: 1, value: '', fileList: [] }]);
+      setDescriptions([{ id: 1, values: { ru: '', ky: '', en: '' }, fileList: [] }]);
+      setSelectedLanguage('ru');
     }
   }, [newDetail, type, modal, form]);
 
@@ -148,26 +181,26 @@ export const AdminNewsSave: FC<AdminNewsSaveProps> = ({
 
         return {
           id: desc.id,
-          description: desc.value,
+          description_ru: desc.values.ru || '',
+          description_ky: desc.values.ky || '',
+          description_en: desc.values.en || '',
           images: contentFiles,
         };
       });
 
       const contentsToUpdate =
-        type === 'edit'
+        type === 'edit' && newDetail
           ? descriptions
               .filter((desc) => {
-                const originalContent = newDetail?.content?.find((c) => c.id === desc.id);
+                const originalContent = newDetail.content?.find((c: any) => c.id === desc.id);
 
-                return (
-                  desc.id && // Убедиться, что ID существует
-                  originalContent && // Убедиться, что есть оригинальное описание
-                  desc.value.trim() !== originalContent.description.trim() // Проверить, что описание изменилось
-                );
+                return desc.id && originalContent;
               })
               .map((desc) => ({
                 id_content: desc.id,
-                description: desc.value,
+                description_ru: desc.values.ru || '',
+                description_ky: desc.values.ky || '',
+                description_en: desc.values.en || '',
               }))
           : [];
 
@@ -176,7 +209,9 @@ export const AdminNewsSave: FC<AdminNewsSaveProps> = ({
           ? descriptions
               .filter((desc) => !newDetail?.content?.some((c) => c.id === desc.id))
               .map((desc) => ({
-                description: desc.value,
+                description_ru: desc.values.ru || '',
+                description_ky: desc.values.ky || '',
+                description_en: desc.values.en || '',
                 images: desc.fileList
                   .filter((file: any) => file.originFileObj)
                   .map((file: any) => file.originFileObj),
@@ -184,7 +219,9 @@ export const AdminNewsSave: FC<AdminNewsSaveProps> = ({
           : [];
 
       const formData: ApiNewsRequest = {
-        title: values.title,
+        title_ru: values.title_ru || '',
+        title_ky: values.title_ky || '',
+        title_en: values.title_en || '',
         contents,
         main_images: newMainFiles,
         date: dayjs(values.date).format('YYYY-MM-DD'),
@@ -273,6 +310,7 @@ export const AdminNewsSave: FC<AdminNewsSaveProps> = ({
     setContentsToDelete([]);
     setMainImagesToDelete([]);
     setImagesToDelete([]);
+    setSelectedLanguage('ru');
   }, [form]);
 
   const handleRemoveMainImage = (uid: number) => {
@@ -280,9 +318,11 @@ export const AdminNewsSave: FC<AdminNewsSaveProps> = ({
     setFileList((prev: any[]) => prev.filter((file: any) => file.uid !== uid));
   };
 
-  const handleQuillChange = useCallback((content: string, id: number) => {
+  const handleQuillChange = useCallback((content: string, id: number, lang: string) => {
     setDescriptions((prev) =>
-      prev.map((desc) => (desc.id === id ? { ...desc, value: content } : desc))
+      prev.map((desc) =>
+        desc.id === id ? { ...desc, values: { ...desc.values, [lang]: content } } : desc
+      )
     );
   }, []);
 
@@ -291,7 +331,7 @@ export const AdminNewsSave: FC<AdminNewsSaveProps> = ({
   }, []);
 
   const handleDescriptionFileRemove = (file: any, id: number) => {
-    setImagesToDelete((prev) => [...prev, file.uid]); // Добавляем id удалённой картинки
+    setImagesToDelete((prev) => [...prev, file.uid]);
 
     setDescriptions((prev) =>
       prev.map((desc) =>
@@ -303,14 +343,22 @@ export const AdminNewsSave: FC<AdminNewsSaveProps> = ({
   };
 
   const addDescription = useCallback(() => {
-    setDescriptions((prev) => [...prev, { id: prev.length + 1, value: '', fileList: [] }]);
+    setDescriptions((prev) => [
+      ...prev,
+      {
+        id: prev.length + 1,
+        values: { ru: '', ky: '', en: '' },
+        fileList: [],
+      },
+    ]);
   }, []);
 
   const removeDescription = (id: number) => {
     setContentsToDelete((prev) => [...prev, id]);
-
     setDescriptions((prev) => prev.filter((desc) => desc.id !== id));
   };
+
+  console.log(form.getFieldsValue());
 
   return (
     <>
@@ -335,149 +383,237 @@ export const AdminNewsSave: FC<AdminNewsSaveProps> = ({
       )}
       <Modal open={modal} onCancel={handleModal} footer={false} width={1200}>
         <div className="p-[16px_12px] grid gap-[20px]">
-          <Form form={form} onFinish={onFinish} layout="vertical" autoComplete="off">
-            <h2 className="text-primary text-[30px] mb-5">Добавление новости</h2>
-            <Form.Item
-              label="Заголовок"
-              name="title"
-              rules={[
-                { required: true, message: 'Пожалуйста, введите заголовок' },
-                { min: 7, message: 'Минимальная длина заголовка - 7 символов' },
-              ]}
-            >
-              <Input placeholder="Введите заголовок" size="large" />
-            </Form.Item>
-            <Form.Item label="Изображения" name="main_images">
-              <Upload
-                listType="picture"
-                fileList={fileList}
-                beforeUpload={beforeUpload}
-                onChange={handleChange}
-                multiple
-                itemRender={() => <div></div>}
-              >
-                <Button className="p-5 flex items-center">
-                  <UploadIcon />
-                  Загрузить изображения
-                </Button>
-              </Upload>
-              {fileList?.length > 0 && (
-                <List
-                  className="mt-[16px]"
-                  size="small"
-                  bordered
-                  dataSource={fileList}
-                  renderItem={(file: any) => (
-                    <List.Item key={file.uid || file.name} className="!flex !justify-between">
-                      <div className="flex gap-5 items-center">
-                        <Image
-                          width={50}
-                          height={50}
-                          src={file.thumbUrl || file.url}
-                          alt={file.name}
-                        />
-                        {file.name}
-                      </div>
-                      <Button
-                        onClick={() => handleRemoveMainImage(file.uid)}
-                        className="text-red border-red"
-                      >
-                        Удалить
-                      </Button>
-                    </List.Item>
-                  )}
+          {isLoadingData ? (
+            <Loader />
+          ) : (
+            <Form form={form} onFinish={onFinish} layout="vertical" autoComplete="off">
+              <h2 className="text-primary text-[30px] mb-5">
+                {type === 'add' ? 'Добавление новости' : 'Изменение новости'}
+              </h2>
+
+              {/* Сегмент выбора языка */}
+              <div className="mb-5">
+                <label className="block mb-2 font-bold">Язык заполнения</label>
+                <Segmented
+                  options={[
+                    { label: 'Русский', value: 'ru' },
+                    { label: 'Кыргызча', value: 'ky' },
+                    { label: 'English', value: 'en' },
+                  ]}
+                  onChange={setSelectedLanguage}
+                  value={selectedLanguage}
+                  className="w-full sm:w-1/2 h-[36px] mb-[0] [&>div]:justify-between [&>div>label]:w-full"
                 />
-              )}
-            </Form.Item>
-            {descriptions.map((desc) => (
-              <div
-                key={desc.id}
-                className="border border-solid border-[#E5E5E5] rounded-[8px] p-5 relative"
-              >
-                <button
-                  type="button"
-                  className="absolute top-2 right-2"
-                  onClick={() => removeDescription(desc.id)}
-                >
-                  X
-                </button>
-                <div className="mb-4">
-                  <label htmlFor={`description_${desc.id}`} className="block mb-2 font-bold">
-                    Описание
-                  </label>
-                  <ReactQuill
-                    theme="snow"
-                    value={desc.value}
-                    onChange={(content) => handleQuillChange(content, desc.id)}
-                    modules={modules}
-                    formats={formats}
-                    className="custom-quill"
-                  />
-                </div>
-                <div>
-                  <label className="block mb-2 font-bold">Изображения</label>
-                  <Upload
-                    listType="picture"
-                    fileList={desc.fileList}
-                    beforeUpload={beforeUpload}
-                    onChange={({ fileList }) => handleDescriptionFileChange(fileList, desc.id)}
-                    multiple
-                    itemRender={() => <div></div>}
-                  >
-                    <Button className="p-5 flex items-center">
-                      <UploadIcon />
-                      Загрузить изображения
-                    </Button>
-                  </Upload>
-                  {desc.fileList?.length > 0 && (
-                    <List
-                      className="mt-[16px]"
-                      size="small"
-                      bordered
-                      dataSource={desc.fileList}
-                      renderItem={(file: any) => (
-                        <List.Item key={file.uid || file.name} className="!flex !justify-between">
-                          <div className="flex gap-5 items-center">
-                            <Image
-                              width={50}
-                              height={50}
-                              src={file.thumbUrl || file.url}
-                              alt={file.name}
-                            />
-                            {file.name}
-                          </div>
-                          <Button
-                            onClick={() => handleDescriptionFileRemove(file, desc.id)}
-                            className="text-red border-red"
-                          >
-                            Удалить
-                          </Button>
-                        </List.Item>
-                      )}
-                    />
-                  )}
-                </div>
               </div>
-            ))}
-            <Button type="dashed" onClick={addDescription} className="w-full mb-5">
-              Добавить еще описание
-            </Button>
-            <Form.Item label="Дата" name="date" rules={[{ required: true }]}>
-              <DatePicker placeholder="Укажите дату" size="large" className="w-full" />
-            </Form.Item>
-            <Form.Item name="is_special_offer" valuePropName="checked">
-              <Checkbox>Дублировать на Спецпредложения</Checkbox>
-            </Form.Item>
-            <Button
-              type="primary"
-              size="large"
-              className="px-5"
-              htmlType="submit"
-              loading={isLoading}
-            >
-              Сохранить
-            </Button>
-          </Form>
+
+              {/* Заголовки для всех языков - ВСЕ ОДНОВРЕМЕННО */}
+              <Form.Item
+                label="Заголовок (Русский)"
+                name="title_ru"
+                rules={[
+                  {
+                    required: selectedLanguage === 'ru',
+                    message: 'Пожалуйста, введите заголовок на русском',
+                  },
+                  { min: 7, message: 'Минимальная длина заголовка - 7 символов' },
+                ]}
+                style={{ display: selectedLanguage === 'ru' ? 'block' : 'none' }}
+              >
+                <Input placeholder="Русский заголовок" size="large" />
+              </Form.Item>
+
+              <Form.Item
+                label="Заголовок (Кыргызча)"
+                name="title_ky"
+                rules={[
+                  {
+                    required: selectedLanguage === 'ky',
+                    message: 'Пожалуйста, введите заголовок на кыргызском',
+                  },
+                  { min: 7, message: 'Минимальная длина заголовка - 7 символов' },
+                ]}
+                style={{ display: selectedLanguage === 'ky' ? 'block' : 'none' }}
+              >
+                <Input placeholder="Кыргызча заголовок" size="large" />
+              </Form.Item>
+
+              <Form.Item
+                label="Заголовок (English)"
+                name="title_en"
+                rules={[
+                  {
+                    required: selectedLanguage === 'en',
+                    message: 'Пожалуйста, введите заголовок на английском',
+                  },
+                  { min: 7, message: 'Минимальная длина заголовка - 7 символов' },
+                ]}
+                style={{ display: selectedLanguage === 'en' ? 'block' : 'none' }}
+              >
+                <Input placeholder="English title" size="large" />
+              </Form.Item>
+
+              <Form.Item label="Изображения" name="main_images">
+                <Upload
+                  listType="picture"
+                  fileList={fileList}
+                  beforeUpload={beforeUpload}
+                  onChange={handleChange}
+                  multiple
+                  itemRender={() => <div></div>}
+                >
+                  <Button className="p-5 flex items-center">
+                    <UploadIcon />
+                    Загрузить изображения
+                  </Button>
+                </Upload>
+                {fileList?.length > 0 && (
+                  <List
+                    className="mt-[16px]"
+                    size="small"
+                    bordered
+                    dataSource={fileList}
+                    renderItem={(file: any) => (
+                      <List.Item key={file.uid || file.name} className="!flex !justify-between">
+                        <div className="flex gap-5 items-center">
+                          <Image
+                            width={50}
+                            height={50}
+                            src={file.thumbUrl || file.url}
+                            alt={file.name}
+                          />
+                          {file.name}
+                        </div>
+                        <Button
+                          onClick={() => handleRemoveMainImage(file.uid)}
+                          className="text-red border-red"
+                        >
+                          Удалить
+                        </Button>
+                      </List.Item>
+                    )}
+                  />
+                )}
+              </Form.Item>
+
+              {descriptions.map((desc) => (
+                <div
+                  key={desc.id}
+                  className="border border-solid border-[#E5E5E5] rounded-[8px] p-5 relative"
+                >
+                  <button
+                    type="button"
+                    className="absolute top-2 right-2"
+                    onClick={() => removeDescription(desc.id)}
+                  >
+                    X
+                  </button>
+
+                  {/* Описания для всех языков */}
+                  <div className="mb-4">
+                    <label className="block mb-2 font-bold">Описания</label>
+
+                    <div style={{ display: selectedLanguage === 'ru' ? 'block' : 'none' }}>
+                      <label className="block mb-2">Русский</label>
+                      <ReactQuill
+                        theme="snow"
+                        value={desc.values.ru}
+                        onChange={(content) => handleQuillChange(content, desc.id, 'ru')}
+                        modules={modules}
+                        formats={formats}
+                        className="custom-quill mb-4"
+                      />
+                    </div>
+
+                    <div style={{ display: selectedLanguage === 'ky' ? 'block' : 'none' }}>
+                      <label className="block mb-2">Кыргызча</label>
+                      <ReactQuill
+                        theme="snow"
+                        value={desc.values.ky}
+                        onChange={(content) => handleQuillChange(content, desc.id, 'ky')}
+                        modules={modules}
+                        formats={formats}
+                        className="custom-quill mb-4"
+                      />
+                    </div>
+
+                    <div style={{ display: selectedLanguage === 'en' ? 'block' : 'none' }}>
+                      <label className="block mb-2">English</label>
+                      <ReactQuill
+                        theme="snow"
+                        value={desc.values.en}
+                        onChange={(content) => handleQuillChange(content, desc.id, 'en')}
+                        modules={modules}
+                        formats={formats}
+                        className="custom-quill mb-4"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block mb-2 font-bold">Изображения</label>
+                    <Upload
+                      listType="picture"
+                      fileList={desc.fileList}
+                      beforeUpload={beforeUpload}
+                      onChange={({ fileList }) => handleDescriptionFileChange(fileList, desc.id)}
+                      multiple
+                      itemRender={() => <div></div>}
+                    >
+                      <Button className="p-5 flex items-center">
+                        <UploadIcon />
+                        Загрузить изображения
+                      </Button>
+                    </Upload>
+                    {desc.fileList?.length > 0 && (
+                      <List
+                        className="mt-[16px]"
+                        size="small"
+                        bordered
+                        dataSource={desc.fileList}
+                        renderItem={(file: any) => (
+                          <List.Item key={file.uid || file.name} className="!flex !justify-between">
+                            <div className="flex gap-5 items-center">
+                              <Image
+                                width={50}
+                                height={50}
+                                src={file.thumbUrl || file.url}
+                                alt={file.name}
+                              />
+                              {file.name}
+                            </div>
+                            <Button
+                              onClick={() => handleDescriptionFileRemove(file, desc.id)}
+                              className="text-red border-red"
+                            >
+                              Удалить
+                            </Button>
+                          </List.Item>
+                        )}
+                      />
+                    )}
+                  </div>
+                </div>
+              ))}
+
+              <Button type="dashed" onClick={addDescription} className="w-full mb-5">
+                Добавить еще описание
+              </Button>
+
+              <Form.Item label="Дата" name="date" rules={[{ required: true }]}>
+                <DatePicker placeholder="Укажите дату" size="large" className="w-full" />
+              </Form.Item>
+
+              <Button
+                type="primary"
+                size="large"
+                className="px-5"
+                htmlType="submit"
+                loading={isLoading}
+              >
+                Сохранить
+              </Button>
+            </Form>
+          )}
         </div>
       </Modal>
     </>

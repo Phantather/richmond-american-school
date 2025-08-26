@@ -87,7 +87,7 @@ export const AdminCarsFilePriceTable: FC<AdminCarsFilePriceTableProps> = ({
       width: 200,
       render: (_row, value) => (
         <div className="flex gap-2 items-center">
-          <a href={value?.file_name} target="_blank">
+          <a href={value?.file_name} target="_blank" rel="noreferrer">
             <FileIcon />
           </a>
           <div onClick={() => setFilePriceItem(value)}>

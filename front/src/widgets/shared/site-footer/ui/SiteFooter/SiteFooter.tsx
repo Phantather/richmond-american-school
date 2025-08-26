@@ -18,6 +18,7 @@ export const SiteFooter: FC<SiteFooterProps> = () => {
                   href="https://go.2gis.com/uFHt4"
                   target="_blank"
                   className="text-white text-[14px] font-normal flex items-center gap-[8px]"
+                  rel="noreferrer"
                 >
                   <MapsIcon />
                   г. Бишкек, Анкара 6/1
@@ -28,6 +29,7 @@ export const SiteFooter: FC<SiteFooterProps> = () => {
                   href="mailto:office@asiamotors.kg"
                   target="_blank"
                   className="text-white text-[14px] font-normal flex items-center gap-[8px]"
+                  rel="noreferrer"
                 >
                   <EmailsIcon />
                   office@asiamotors.kg
@@ -39,6 +41,7 @@ export const SiteFooter: FC<SiteFooterProps> = () => {
                   href="tel:+996221230003"
                   target="_blank"
                   className="text-white text-[14px] font-normal flex items-center gap-[8px]"
+                  rel="noreferrer"
                 >
                   <PhonesIcon />
                   +996 (221) 230 003
@@ -49,6 +52,7 @@ export const SiteFooter: FC<SiteFooterProps> = () => {
                   href="https://wa.me/996775530003"
                   target="_blank"
                   className="text-white text-[14px] font-normal flex items-center gap-[8px]"
+                  rel="noreferrer"
                 >
                   <WhatsAppIcon />
                   +996 (775) 530 003
@@ -111,6 +115,7 @@ export const SiteFooter: FC<SiteFooterProps> = () => {
                   href="tel:+996704530003"
                   target="_blank"
                   className="text-white text-[14px] font-normal flex items-center gap-[8px]"
+                  rel="noreferrer"
                 >
                   <PhonesIcon />
                   +996 (704) 530 003
@@ -121,6 +126,7 @@ export const SiteFooter: FC<SiteFooterProps> = () => {
                   href="tel:+996556530003"
                   target="_blank"
                   className="text-white text-[14px] font-normal flex items-center gap-[8px]"
+                  rel="noreferrer"
                 >
                   <PhonesIcon />
                   +996 (556) 530 003
@@ -131,6 +137,7 @@ export const SiteFooter: FC<SiteFooterProps> = () => {
                   href="tel:+996775530003"
                   target="_blank"
                   className="text-white text-[14px] font-normal flex items-center gap-[8px]"
+                  rel="noreferrer"
                 >
                   <PhonesIcon />
                   +996 (775) 530 003
@@ -141,6 +148,7 @@ export const SiteFooter: FC<SiteFooterProps> = () => {
                   href="tel:+996778530003"
                   target="_blank"
                   className="text-white text-[14px] font-normal flex items-center gap-[8px]"
+                  rel="noreferrer"
                 >
                   <PhonesIcon />
                   +996 (778) 530 003
@@ -151,6 +159,7 @@ export const SiteFooter: FC<SiteFooterProps> = () => {
                   href="tel:+996312530003"
                   target="_blank"
                   className="text-white text-[14px] font-normal flex items-center gap-[8px]"
+                  rel="noreferrer"
                 >
                   <PhonesIcon />
                   +996 (312) 530 003

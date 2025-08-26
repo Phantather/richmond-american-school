@@ -41,13 +41,38 @@ export const AdminNewsTable: FC<AdminNewsTableProps> = ({
     {
       title: 'Заголовок',
       width: 200,
-      render: (_row, value) => <p>{value?.title}</p>,
+      render: (_row, value) => (
+        <>
+          <p className="border border-solid border-primary border-t-transparent border-l-transparent border-r-transparent py-2">
+            {value?.title?.ru}
+          </p>
+          <p className="border border-solid border-primary border-t-transparent border-l-transparent border-r-transparent py-2">
+            {value?.title?.ky}
+          </p>
+          <p className="border border-solid border-primary border-t-transparent border-l-transparent border-r-transparent py-2">
+            {value?.title?.en}
+          </p>
+        </>
+      ),
     },
     {
       title: 'Описание',
       width: 400,
       render: (_row, value) => (
-        <div dangerouslySetInnerHTML={{ __html: value?.description?.slice(0, 100) || '' }} />
+        <>
+          <div
+            className="border border-solid border-primary border-t-transparent border-l-transparent border-r-transparent py-2"
+            dangerouslySetInnerHTML={{ __html: value?.description?.ru?.slice(0, 100) || '' }}
+          />
+          <div
+            className="border border-solid border-primary border-t-transparent border-l-transparent border-r-transparent py-2"
+            dangerouslySetInnerHTML={{ __html: value?.description?.ky?.slice(0, 100) || '' }}
+          />
+          <div
+            className="border border-solid border-primary border-t-transparent border-l-transparent border-r-transparent py-2"
+            dangerouslySetInnerHTML={{ __html: value?.description?.en?.slice(0, 100) || '' }}
+          />
+        </>
       ),
     },
     {
@@ -55,7 +80,7 @@ export const AdminNewsTable: FC<AdminNewsTableProps> = ({
       width: 100,
       render: (_row, value) => (
         <>
-          <Image width={50} src={value?.image_name} alt={value?.title || 'news image'} />
+          <Image width={50} src={value?.image_name} alt={value?.title?.ru || 'news image'} />
         </>
       ),
     },

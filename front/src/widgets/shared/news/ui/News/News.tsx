@@ -1,17 +1,11 @@
-import { useNavigate } from 'react-router';
-
 import { useLayoutEffect, useState } from 'react';
 
 import { Pagination, Skeleton } from 'antd';
 
 import { NewsCards, NewsItem, useNews, useSetNews } from '~entities/shared/news';
-import { RoutesUrls } from '~shared/lib/router';
 
 export const News = () => {
-  const navigate = useNavigate();
-
   const [isLoading, setIsLoading] = useState(true);
-  const [newsItem, setNewsItem] = useState<NewsItem | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
   const news = useNews();
@@ -53,14 +47,14 @@ export const News = () => {
               />
             )}
           </div>
-          <div className="col-span-12 md:col-span-8 sm:col-span-4  flex justify-center mt-[55px]">
-            <button
-              onClick={() => navigate(RoutesUrls.news)}
-              className="bg-primary text-white !rounded-0 border-none p-[15px_25px] cursor-pointer"
-            >
-              Больше новостей
-            </button>
-          </div>
+          {/*<div className="col-span-12 md:col-span-8 sm:col-span-4  flex justify-center mt-[55px]">*/}
+          {/*  <button*/}
+          {/*    onClick={() => navigate(RoutesUrls.news)}*/}
+          {/*    className="bg-primary text-white !rounded-0 border-none p-[15px_25px] cursor-pointer"*/}
+          {/*  >*/}
+          {/*    Больше новостей*/}
+          {/*  </button>*/}
+          {/*</div>*/}
         </>
       );
     }

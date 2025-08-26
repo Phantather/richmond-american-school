@@ -7,13 +7,12 @@ html body {
 }
 
 body {
-  background: var(--secondary);
   margin: 0;
   scroll-behavior: smooth!important;
   height: 100vh;
   --primary: #202f5b;
   --secondary: #0b00ea;
-  --black: #bec3cf;
+  --black: #000;
   --gray: #858585;
   --secondGray: #B3B3B3;
   --white: #fff;
