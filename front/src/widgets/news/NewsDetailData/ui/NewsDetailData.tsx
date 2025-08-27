@@ -7,9 +7,10 @@ import { useLayoutEffect, useState } from 'react';
 import { RoutesUrls } from '~shared/lib/router';
 import { NewsDetail, useNewsDetail, useResetNewsDetail, useSetNewsDetail } from '~entities/news';
 
-import { i18n } from '~shared/lib/i18n';
+import { i18n, useTranslation } from '~shared/lib/i18n';
 
 export const NewsDetailData = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id?: any }>();
   const locale = i18n.language;
 
@@ -60,14 +61,14 @@ export const NewsDetailData = () => {
     {
       title: (
         <NavLink to={RoutesUrls.root} className="cursor-pointer text-[14px]">
-          Главная
+          {t('routes.home')}
         </NavLink>
       ),
     },
     {
       title: (
         <NavLink to={RoutesUrls.news} className="cursor-pointer text-[14px]">
-          Новости
+          {t('routes.news')}
         </NavLink>
       ),
     },

@@ -30,7 +30,7 @@ export const SiteHeader: FC<SiteHeaderProps> = () => {
             <SiteLogo />
             <div className="flex items-center gap-[30px]">
               <SiteLink
-                path={RoutesUrls.specialOffer}
+                path={RoutesUrls.root}
                 className="text-[16px] font-medium text-white"
                 title={t('routes.home')}
               />

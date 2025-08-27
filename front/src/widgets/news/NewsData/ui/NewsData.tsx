@@ -6,8 +6,10 @@ import { NavLink } from 'react-router-dom';
 
 import { NewsCards, useNews, useSetNews } from '~entities/shared/news';
 import { RoutesUrls } from '~shared/lib/router';
+import { useTranslation } from '~shared/lib/i18n';
 
 export const NewsData = () => {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -35,12 +37,12 @@ export const NewsData = () => {
     {
       title: (
         <NavLink to={RoutesUrls.root} className="text-black cursor-pointer text-[14px]">
-          Главная
+          {t('routes.home')}
         </NavLink>
       ),
     },
     {
-      title: <div className="text-black text-[14px]">Новости</div>,
+      title: <div className="text-black text-[14px]">{t('routes.news')}</div>,
     },
   ];
 
@@ -72,15 +74,12 @@ export const NewsData = () => {
   };
 
   return (
-    <div className="grid grid-cols-12 sm:grid-cols-8 xs:grid-cols-4 gap-[60px] p-[60px_20px_100px] max-w-[1024px] mx-auto w-full">
+    <div className="grid grid-cols-12 sm:grid-cols-8 xs:grid-cols-4 gap-5 py-5">
       <Breadcrumb
         separator="/"
         items={breadcrumbItems}
         className="col-span-12 sm:col-span-8 xs:col-span-4  [&>ol]:flex [&>ol]:items-center"
       />
-      <h1 className="col-span-12 sm:col-span-8 xs:col-span-4 text-center text-[58px] font-semibold">
-        Новости
-      </h1>
       {isLoading ? (
         <div className="col-span-12 sm:col-span-8 xs:col-span-4 flex justify-center items-center h-[300px]">
           <Spin size="large"></Spin>

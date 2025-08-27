@@ -52,7 +52,7 @@ export const NewsDetail: FC<NewsDetailProps> = ({ newsDetail }) => {
   };
 
   return (
-    <div className="col-span-12 mt-6">
+    <div className="col-span-12 mt-5">
       <h1 className="text-primary text-[48px] font-semibold">
         {getLocalizedContent(newsDetail?.title)}
       </h1>

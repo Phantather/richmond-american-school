@@ -83,7 +83,8 @@
   },
   "routes": {
     "home": "Home",
-    "about": "About the school"
+    "about": "About the school",
+    "news": "News"
   },
   "Timer": {
     "title": "Каттоо аяктаганга чейинки убакыт:",
