@@ -46,8 +46,15 @@ export const createBanner = async (formData: FormData) => {
 };
 
 export const deleteBanner = async (id: number) => {
+  const token = Cookies.get(`${import.meta.env.VITE_TOKEN_NAME}`);
+
   try {
-    return await api.delete<unknown, ApiResponseData<ApiNewsData>>(routes.deleteBanner(id));
+    return await api.delete<unknown, ApiResponseData<ApiNewsData>>(routes.deleteBanner(id), {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
   } catch (error) {
     return error;
   }

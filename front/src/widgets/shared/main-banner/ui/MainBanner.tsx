@@ -10,6 +10,8 @@ export const MainBanner = () => {
         backgroundSize: 'cover',
       }}
       className="h-[50vh]"
-    ></div>
+    >
+      <div className="w-full h-full bg-[#202f5b90]"></div>
+    </div>
   );
 };

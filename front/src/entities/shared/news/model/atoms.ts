@@ -21,3 +21,14 @@ export const setNewsAtom = atom<
     }
   }
 );
+
+// 👇 новый атом для первых 4 новостей
+export const shortNewsAtom = atom(async () => {
+  const response = await getNews(1, 4); // берем первую страницу, 4 новости
+
+  if (response.data?.error) {
+    return null;
+  }
+
+  return response;
+});

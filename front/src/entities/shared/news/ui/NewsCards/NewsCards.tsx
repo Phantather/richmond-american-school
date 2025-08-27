@@ -58,9 +58,6 @@ export const NewsCards: FC<NewsCardsProps> = ({ newsList }) => {
                 __html: getLocalizedContent(newsItem?.description, 200),
               }}
             />
-            <p className="text-[18px] text-[#858585]">
-              {dayjs(newsItem?.date).locale('ru').format('D MMMM, YYYY')}
-            </p>
           </div>
         </div>
       ))}

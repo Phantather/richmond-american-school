@@ -54,9 +54,6 @@ export const AppHeader: FC<AppHeaderProps> = () => {
           </div>
         </div>
       )}
-      <div className="fixed top-5 right-5">
-        <SetRegistrationView />
-      </div>
     </Header>
   );
 };

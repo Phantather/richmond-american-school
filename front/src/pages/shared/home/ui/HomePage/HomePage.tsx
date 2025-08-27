@@ -10,9 +10,9 @@ export function HomePage() {
         title={'Richmond american school' || ''}
         descriptionKey="Richmond american school"
       />
+      <MainBanner />
       <div className="max-w-[1536px] w-full lg:max-h-[100vh] min-h-[calc(100vh-228px)] mx-auto px-5">
-        <MainBanner />
-        {/*<Banner />*/}
+        <Banner />
         <News />
       </div>
     </>

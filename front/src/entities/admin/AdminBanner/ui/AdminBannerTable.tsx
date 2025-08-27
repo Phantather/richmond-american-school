@@ -40,14 +40,26 @@ export const AdminBannerTable: FC<AdminBannerTableProps> = ({
     {
       title: 'Заголовок',
       width: 200,
-      render: (_row, value) => <p>{value?.banner_title}</p>,
+      render: (_row, value) => (
+        <>
+          <p className="border border-solid border-primary border-t-transparent border-l-transparent border-r-transparent py-2">
+            {value?.banner_title_ru}
+          </p>
+          <p className="border border-solid border-primary border-t-transparent border-l-transparent border-r-transparent py-2">
+            {value?.banner_title_ky}
+          </p>
+          <p className="border border-solid border-primary border-t-transparent border-l-transparent border-r-transparent py-2">
+            {value?.banner_title_en}
+          </p>
+        </>
+      ),
     },
     {
       title: 'Баннеры',
       width: 100,
       render: (_row, value) => (
         <>
-          <Image width={50} src={value?.banner_url} alt={value?.banner_title || 'banner'} />
+          <Image width={50} src={value?.banner_url} alt={value?.banner_title_en || 'banner'} />
         </>
       ),
     },

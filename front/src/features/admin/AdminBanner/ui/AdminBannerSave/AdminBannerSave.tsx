@@ -1,5 +1,5 @@
 import { FC, useCallback, useEffect, useState } from 'react';
-import { Button, Form, Image, Modal, Upload, message } from 'antd';
+import { Button, Form, Image, Modal, Segmented, Upload, message } from 'antd';
 import { UploadFile } from 'antd/es/upload/interface';
 
 import { createBanner, updateBanner } from '~features/admin/AdminBanner/api/api';
@@ -22,11 +22,14 @@ export const AdminBannerSave: FC<AdminBannerSaveProps> = ({
   const notification = useNotification();
   const [imageFile, setImageFile] = useState<UploadFile | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState('ru');
 
   useEffect(() => {
     if (type === 'edit' && modal && bannerItem) {
       const parsedInitialValues = {
-        banner_title: bannerItem.banner_title || '',
+        banner_title_ru: bannerItem.banner_title_ru || '',
+        banner_title_ky: bannerItem.banner_title_ky || '',
+        banner_title_en: bannerItem.banner_title_en || '',
       };
 
       form.setFieldsValue(parsedInitialValues);
@@ -71,7 +74,9 @@ export const AdminBannerSave: FC<AdminBannerSaveProps> = ({
 
     try {
       const formData = new FormData();
-      formData.append('title', values.banner_title);
+      formData.append('title_ru', values.banner_title_ru);
+      formData.append('title_ky', values.banner_title_ky);
+      formData.append('title_en', values.banner_title_en);
 
       if (imageFile && imageFile.originFileObj) {
         formData.append('image', imageFile.originFileObj);
@@ -126,13 +131,44 @@ export const AdminBannerSave: FC<AdminBannerSaveProps> = ({
       <Modal open={modal} onCancel={handleModal} footer={false} width={1200}>
         <div className="p-[16px_12px] grid gap-[20px]">
           <Form form={form} layout="vertical" autoComplete="off" onFinish={onFinish}>
+            <div className="mb-5">
+              <label className="block mb-2 font-bold">Язык заполнения</label>
+              <Segmented
+                options={[
+                  { label: 'Русский', value: 'ru' },
+                  { label: 'Кыргызча', value: 'ky' },
+                  { label: 'English', value: 'en' },
+                ]}
+                onChange={setSelectedLanguage}
+                value={selectedLanguage}
+                className="w-full sm:w-1/2 h-[36px] mb-[0] [&>div]:justify-between [&>div>label]:w-full"
+              />
+            </div>
+
             <h2 className="text-primary text-[30px] mb-5">
               {type === 'add' ? 'Добавление баннера' : 'Изменение баннера'}
             </h2>
             <Form.Item
-              label="Заголовок"
-              name="banner_title"
+              label="Заголовок (Русский)"
+              name="banner_title_ru"
               rules={[{ min: 3, message: 'Минимальная длина заголовка - 3 символов' }]}
+              style={{ display: selectedLanguage === 'ru' ? 'block' : 'none' }}
+            >
+              <Input placeholder="Введите заголовок" size="large" />
+            </Form.Item>
+            <Form.Item
+              label="Заголовок (Кыргызча)"
+              name="banner_title_ky"
+              rules={[{ min: 3, message: 'Минимальная длина заголовка - 3 символов' }]}
+              style={{ display: selectedLanguage === 'ky' ? 'block' : 'none' }}
+            >
+              <Input placeholder="Введите заголовок" size="large" />
+            </Form.Item>
+            <Form.Item
+              label="Заголовок (English)"
+              name="banner_title_en"
+              rules={[{ min: 3, message: 'Минимальная длина заголовка - 3 символов' }]}
+              style={{ display: selectedLanguage === 'en' ? 'block' : 'none' }}
             >
               <Input placeholder="Введите заголовок" size="large" />
             </Form.Item>

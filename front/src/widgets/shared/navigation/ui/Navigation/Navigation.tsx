@@ -46,15 +46,9 @@ export const Navigation: FC<NavigationProps> = () => {
       isTabBar: true,
     },
     {
-      title: 'Файлы автомобилей',
-      path: RoutesUrls.adminPanelFiles,
-      icon: <FileIcon />,
-      isTabBar: true,
-    },
-    {
       title: 'Баннеры',
       path: RoutesUrls.adminPanelBanner,
-      icon: <NewsIcon />,
+      icon: <FileIcon />,
       isTabBar: true,
     },
   ];
