@@ -253,19 +253,19 @@ class PostController {
       }
 
       data.images_to_delete = data.images_to_delete
-        ? await PostService.parseArrayField(data.images_to_delete)
+        ? PostService.parseArrayField(data.images_to_delete)
         : [];
 
       data.contents_to_delete = data.contents_to_delete
-        ? await PostService.parseArrayField(data.contents_to_delete)
+        ? PostService.parseArrayField(data.contents_to_delete)
         : [];
 
       data.new_contents = data.new_contents
-        ? await PostService.parseArrayField(data.new_contents)
+        ? PostService.parseArrayField(data.new_contents)
         : [];
 
       data.main_image_to_delete = data.main_image_to_delete
-        ? await PostService.parseArrayField(data.main_image_to_delete)
+        ? PostService.parseArrayField(data.main_image_to_delete)
         : [];
 
       if (data.date && isNaN(Date.parse(data.date))) {

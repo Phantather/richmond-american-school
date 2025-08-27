@@ -40,6 +40,9 @@ const EMAIL_JWT_EXPIRE_HOURSE = process.env.EMAIL_JWT_EXPIRE_HOURSE || 108000;
 const FILE_POST_PATH = process.env.FILE_POST_PATH || "";
 const FILE_POST_URL = process.env.FILE_POST_URL || "";
 
+const FILE_BANNER_PATH = process.env.FILE_BANNER_PATH || "";
+const FILE_BANNER_URL = process.env.FILE_BANNER_URL || "";
+
 const Config = {
   PORT,
   NODE_ENV,
@@ -61,6 +64,8 @@ const Config = {
   FILE_POST_PATH,
   FILE_POST_URL,
   EMAIL_JWT_EXPIRE_HOURSE,
+  FILE_BANNER_PATH,
+  FILE_BANNER_URL,
 };
 
 export default Config;
